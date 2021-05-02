@@ -1,0 +1,2 @@
+# DapperEntityGenerator
+Dapper Entity Generator
