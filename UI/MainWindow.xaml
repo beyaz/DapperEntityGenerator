@@ -6,6 +6,6 @@
         xmlns:local = "clr-namespace:DapperEntityGenerator"
         mc:Ignorable = "d"
         ResizeMode = "NoResize"
-        Title = "Entity Generator" SizeToContent = "Height" Width = "500" >
+        Title = "Dapper Entity Generator" SizeToContent = "Height" Width = "500" >
 
 </Window>
