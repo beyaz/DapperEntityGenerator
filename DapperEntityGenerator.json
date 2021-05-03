@@ -1,8 +1,8 @@
 {
-  "ConnectionString": "Data Source=185.122.203.152; Initial Catalog = SuperO; MultipleActiveResultSets=True; Persist Security Info = True; User ID = SuperORole; Password = SuperDb!2021; Min Pool Size=5; Connection Timeout=60",
-  "CSharpOutputFilePath": "..\\..\\SuperoBusiness\\SuperOEntity\\{SchemaName}.{TableName}.cs",
-  "DatabaseName": "SuperO",
-  "ExportTableNames": "Kullanici,Ders,Duyuru",
-  "NamespacePattern": "SuperoBusiness.SuperOEntity.{SchemaName}",
+  "ConnectionString": "Data Source=*; Initial Catalog = *; MultipleActiveResultSets=True; Persist Security Info = True; User ID = *; Password = *; Min Pool Size=5; Connection Timeout=60",
+  "CSharpOutputFilePath": "..\\..\\YourProjectFolderPath\\AnyDirectory\\{SchemaName}.{TableName}.cs",
+  "DatabaseName": "ABC",
+  "ExportTableNames": "Table1,Table2 or generating for all use *",
+  "NamespacePattern": "A.B.{SchemaName}",
   "SchemaName": "dbo"
 }
