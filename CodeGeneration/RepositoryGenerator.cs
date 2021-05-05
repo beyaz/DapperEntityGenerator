@@ -46,7 +46,7 @@ namespace DapperEntityGenerator.CodeGeneration
                     lines.Add($"public {table.Name} Get{table.Name}By{Join("And", columnNames)}({Join(",", parameters.Select(p => p.DotNetType + " " + p.Name))})");
                     lines.Add("{");
 
-                    lines.Add($"return connection.QueryFirstOrDefault<{table.Name}>(\"{sqlPart}\", {parameterPart});");
+                    lines.Add($"return dbConnection.QueryFirstOrDefault<{table.Name}>(\"{sqlPart}\", {parameterPart});");
 
                     lines.Add("}");
 
@@ -58,7 +58,7 @@ namespace DapperEntityGenerator.CodeGeneration
                     lines.Add($"public IReadOnlyList<{table.Name}> Get{table.Name}By{Join("And", columnNames)}({Join(",", parameters.Select(p => p.DotNetType + " " + p.Name))})");
                     lines.Add("{");
 
-                    lines.Add($"return connection.Query<{table.Name}>(\"{sqlPart}\", {parameterPart}).ToList();");
+                    lines.Add($"return dbConnection.Query<{table.Name}>(\"{sqlPart}\", {parameterPart}).ToList();");
 
                     lines.Add("}");
 
