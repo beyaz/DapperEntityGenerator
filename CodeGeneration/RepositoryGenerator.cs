@@ -21,7 +21,7 @@ namespace DapperEntityGenerator.CodeGeneration
             FileHelper.WriteToFile(getOutputFilePath(table),content);
         }
 
-        public static IReadOnlyList<string> GetRepositoryMethods(Table table,  Func<Column, string> getDotNetTypeName)
+        static IReadOnlyList<string> GetRepositoryMethods(Table table,  Func<Column, string> getDotNetTypeName)
         {
             var getColumnByName = Fun((string name) => table.Columns.ToEnumeration().First(x => x.Name == name));
 
