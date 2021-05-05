@@ -95,7 +95,7 @@ namespace DapperEntityGenerator.CodeGeneration
                 lines.AddRange(ConvertToClassDefinition(table));
                 lines.Add("}");
 
-                RepositoryGenerator.GetRepositoryMethods(table,NamingPattern.GetVariableName,GetDotNetDataType);
+                RepositoryGenerator.GetRepositoryMethods(table,GetDotNetDataType);
 
                 return lines;
             }
@@ -104,7 +104,7 @@ namespace DapperEntityGenerator.CodeGeneration
             {
                 trace($"Exporting table {table.Name}");
 
-                RepositoryGenerator.ExportTable(table,NamingPattern.GetVariableName,GetDotNetDataType,NamingPattern.GetRepositoryClassName,NamingPattern.GetRepositoryNamespaceName,(t)=>NamingPattern.GetRepositoryClassOutputFilePath(t,input.CSharpOutputFilePathForRepository));
+                RepositoryGenerator.ExportTable(table,GetDotNetDataType,NamingPattern.GetRepositoryClassName,NamingPattern.GetRepositoryNamespaceName,(t)=>NamingPattern.GetRepositoryClassOutputFilePath(t,input.CSharpOutputFilePathForRepository));
                 
                 var filePath = cSharpOutputFilePath.Replace("{SchemaName}", schemaName).Replace("{TableName}", table.Name);
 

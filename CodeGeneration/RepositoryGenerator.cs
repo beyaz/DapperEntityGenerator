@@ -5,36 +5,35 @@ using DapperEntityGenerator.IO;
 using Microsoft.SqlServer.Management.Smo;
 using static System.String;
 using static DapperEntityGenerator.Extensions;
+using  static  DapperEntityGenerator.NamingPattern;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
     static class  RepositoryGenerator
     {
 
-        public static void ExportTable(Table table, Func<string, string> getVariableName, Func<Column, string> getDotNetTypeName,Func<Table,string> getClassName,Func<Table,string> getNamespaceName,Func<Table,string> getOutputFilePath)
+        public static void ExportTable(Table table,  Func<Column, string> getDotNetTypeName,Func<Table,string> getClassName,Func<Table,string> getNamespaceName,Func<Table,string> getOutputFilePath)
         {
-            var getMethods = Fun(() => GetRepositoryMethods(table, getVariableName, getDotNetTypeName));
+            var getMethods = Fun(() => GetRepositoryMethods(table, getDotNetTypeName));
             
             var content = GetRepositoryFileContent(table, getMethods,getClassName,getNamespaceName);
 
             FileHelper.WriteToFile(getOutputFilePath(table),content);
         }
 
-        public static IReadOnlyList<string> GetRepositoryMethods(Table table, Func<string, string> getVariableName, Func<Column, string> getDotNetTypeName)
+        public static IReadOnlyList<string> GetRepositoryMethods(Table table,  Func<Column, string> getDotNetTypeName)
         {
             var getColumnByName = Fun((string name) => table.Columns.ToEnumeration().First(x => x.Name == name));
-
-            
 
             var getLinesOfIndexMethod = Fun((Index index) =>
             {
                 var lines = new List<string>();
 
                 var columnNames = index.IndexedColumns.ToEnumeration().Select(x => x.Name).ToList();
-                var parameters  = index.IndexedColumns.ToEnumeration().Select(x => new {Name = getVariableName(x.Name), DotNetType = getDotNetTypeName(getColumnByName(x.Name))});
+                var parameters  = index.IndexedColumns.ToEnumeration().Select(x => new {Name = GetVariableName(x.Name), DotNetType = getDotNetTypeName(getColumnByName(x.Name))});
 
-                var sqlPart       = $"SELECT * FROM {table.Name} WITH(NOLOCK) WHERE {Join(" AND ", columnNames.Select(x => x + " = @" + getVariableName(x)))}";
-                var parameterPart = $"new {{ {Join(",", columnNames.Select(c => getVariableName(c)))} }}";
+                var sqlPart       = $"SELECT * FROM {table.Name} WITH(NOLOCK) WHERE {Join(" AND ", columnNames.Select(x => x + " = @" + GetVariableName(x)))}";
+                var parameterPart = $"new {{ {Join(",", columnNames.Select(c => GetVariableName(c)))} }}";
 
                 if (index.IsUnique)
                 {
