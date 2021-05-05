@@ -43,8 +43,8 @@ namespace DapperEntityGenerator.CodeGeneration
             var databaseName         = input.DatabaseName;
             var schemaName           = input.SchemaName;
             var exportTableNameList  = getExportableTableNames();
-            var namespacePattern     = input.NamespacePattern;
-            var cSharpOutputFilePath = input.CSharpOutputFilePath;
+            var namespacePattern     = input.NamespacePatternForEntity;
+            var cSharpOutputFilePath = input.CSharpOutputFilePathForEntity;
 
             IReadOnlyList<string> GetUsingList()
             {

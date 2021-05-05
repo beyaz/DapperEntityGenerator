@@ -1,8 +1,13 @@
 {
   "ConnectionString": "Data Source=*; Initial Catalog = *; MultipleActiveResultSets=True; Persist Security Info = True; User ID = *; Password = *; Min Pool Size=5; Connection Timeout=60",
-  "CSharpOutputFilePath": "..\\..\\YourProjectFolderPath\\AnyDirectory\\{SchemaName}.{TableName}.cs",
   "DatabaseName": "ABC",
+  "SchemaName": "dbo",
   "ExportTableNames": "Table1,Table2 or generating for all use *",
-  "NamespacePattern": "A.B.{SchemaName}",
-  "SchemaName": "dbo"
+  "NamespacePatternForEntity": "A.B.{SchemaName}",
+  "CSharpOutputFilePathForEntity": "..\\..\\YourProjectFolderPath\\AnyDirectory\\{SchemaName}.{TableName}.cs",
+
+  "NamespacePatternForRepository": "A.B.{SchemaName}",
+  "ClassNamePatternForRepository": "{SchemaName}Repository",
+  "CSharpOutputFilePathForRepository": "..\\..\\YourProjectFolderPath\\AnyDirectory\\{SchemaName}.{TableName}Repository.cs"
+
 }

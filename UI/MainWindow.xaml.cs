@@ -55,8 +55,8 @@ namespace DapperEntityGenerator.UI
                                                   createInput(nameof(EntityGeneratorInput.ConnectionString)),
                                                   createInput(nameof(EntityGeneratorInput.DatabaseName)),
                                                   createInput(nameof(EntityGeneratorInput.SchemaName)),
-                                                  createInput(nameof(EntityGeneratorInput.NamespacePattern)),
-                                                  createInput(nameof(EntityGeneratorInput.CSharpOutputFilePath)),
+                                                  createInput(nameof(EntityGeneratorInput.NamespacePatternForEntity)),
+                                                  createInput(nameof(EntityGeneratorInput.CSharpOutputFilePathForEntity)),
                                                   createInput(nameof(EntityGeneratorInput.ExportTableNames))
                                               }
                                           },
