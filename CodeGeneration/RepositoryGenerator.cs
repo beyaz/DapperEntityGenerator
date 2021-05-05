@@ -88,7 +88,7 @@ namespace DapperEntityGenerator.CodeGeneration
         }
         
         
-        public static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, Func<Table,string> getClassName,Func<Table,string> getNamespaceName)
+        static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, Func<Table,string> getClassName,Func<Table,string> getNamespaceName)
         {
             var lines = new List<string>();
 
