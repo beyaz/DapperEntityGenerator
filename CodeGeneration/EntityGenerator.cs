@@ -5,6 +5,7 @@ using System.Linq;
 using DapperEntityGenerator.IO;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using static System.String;
 using static DapperEntityGenerator.Extensions;
 
 namespace DapperEntityGenerator.CodeGeneration
@@ -35,6 +36,7 @@ namespace DapperEntityGenerator.CodeGeneration
             }
 
             trace("Started.");
+
             updatePercent(3);
 
             var connectionString     = input.ConnectionString;
@@ -87,11 +89,13 @@ namespace DapperEntityGenerator.CodeGeneration
                 var lines = new List<string>();
 
                 lines.AddRange(GetUsingList());
-                lines.Add(string.Empty);
+                lines.Add(Empty);
                 lines.Add($"namespace {namespacePattern.Replace("{SchemaName}", schemaName)}");
                 lines.Add("{");
                 lines.AddRange(ConvertToClassDefinition(table));
                 lines.Add("}");
+
+                RepositoryGenerator.GetRepositoryMethods(table,NamingPattern.GetVariableName,GetDotNetDataType);
 
                 return lines;
             }
@@ -99,7 +103,14 @@ namespace DapperEntityGenerator.CodeGeneration
             void GenerateTable(Table table)
             {
                 trace($"Exporting table {table.Name}");
-                FileHelper.WriteToFile(cSharpOutputFilePath.Replace("{SchemaName}", schemaName).Replace("{TableName}", table.Name), FileContentWriter.GetFileContent(ConvertToFileContentLines(table)));
+
+                RepositoryGenerator.ExportTable(table,NamingPattern.GetVariableName,GetDotNetDataType);
+                
+                var filePath = cSharpOutputFilePath.Replace("{SchemaName}", schemaName).Replace("{TableName}", table.Name);
+
+                var fileContent = FileContentWriter.GetFileContent(ConvertToFileContentLines(table));
+
+                FileHelper.WriteToFile(filePath, fileContent);
             }
 
             var processedTables = Loop(GetTablesInSchema, GenerateTable, updatePercent);
@@ -108,6 +119,9 @@ namespace DapperEntityGenerator.CodeGeneration
             processInfo.Percent = 100;
         }
         #endregion
+
+       
+
 
         #region Methods
         static IReadOnlyList<string> ConvertToClassDefinition(Table table)
@@ -123,7 +137,7 @@ namespace DapperEntityGenerator.CodeGeneration
             foreach (Column column in table.Columns)
             {
                 lines.AddRange(ConvertToPropertyDefinition(column));
-                lines.Add(string.Empty);
+                lines.Add(Empty);
             }
 
             lines.Add("}");
@@ -152,6 +166,10 @@ namespace DapperEntityGenerator.CodeGeneration
             return lines;
         }
 
+        static string GetDotNetDataType(Column column)
+        {
+            return GetDotNetDataType(column.DataType.Name);
+        }
         static string GetDotNetDataType(string sqlDataTypeName)
         {
             switch (sqlDataTypeName.ToLower())

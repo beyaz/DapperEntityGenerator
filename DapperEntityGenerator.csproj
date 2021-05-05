@@ -60,9 +60,11 @@
     </ApplicationDefinition>
     <Compile Include="CodeGeneration\EntityGeneratorInput.cs" />
     <Compile Include="CodeGeneration\ProcessInfo.cs" />
+    <Compile Include="CodeGeneration\RepositoryGenerator.cs" />
     <Compile Include="IO\FileHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="CodeGeneration\FileContentWriter.cs" />
+    <Compile Include="NamingPattern.cs" />
     <Compile Include="UiHelpers\Card.cs" />
     <Compile Include="UiHelpers\Layout.cs" />
     <Compile Include="UI\CacheHelper.cs" />
