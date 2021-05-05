@@ -67,11 +67,42 @@ namespace DapperEntityGenerator.CodeGeneration
 
             });
 
+            var getUpdateLines = Fun(() =>
+            {
+                var lines = new List<string>();
 
+                lines.Add($"public {table.Name} Update({table.Name} {GetVariableName(table.Name)})");
+                lines.Add("{");
+                lines.Add($"dbConnection.Update({GetVariableName(table.Name)}, dbTransaction);");
+                lines.Add($"return {GetVariableName(table.Name)};");
+                lines.Add("}");
 
-            return JoinMethodLines(table.Indexes.ToEnumeration().Select(getLinesOfIndexMethod));
+                return lines;
+            });
 
-          
+            var getInsertLines = Fun(() =>
+            {
+                var lines = new List<string>();
+
+                lines.Add($"public {table.Name} Insert({table.Name} {GetVariableName(table.Name)})");
+                lines.Add("{");
+                lines.Add($"dbConnection.Insert({GetVariableName(table.Name)}, dbTransaction);");
+                lines.Add($"return {GetVariableName(table.Name)};");
+                lines.Add("}");
+
+                return lines;
+            });
+
+            var methods = table.Indexes.ToEnumeration().Select(getLinesOfIndexMethod).ToList();
+
+            methods.Add(getInsertLines());
+
+            if (table.HasPrimaryClusteredIndex)
+            {
+                methods.Add(getUpdateLines());   
+            }
+
+            return JoinMethodLines(methods);
         }
 
         static List<string> JoinMethodLines(IEnumerable<List<string>> parts)
