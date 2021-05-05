@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DapperEntityGenerator.IO;
 using Microsoft.SqlServer.Management.Smo;
@@ -12,13 +13,18 @@ namespace DapperEntityGenerator.CodeGeneration
     static class  RepositoryGenerator
     {
 
-        public static void ExportTable(Table table,  Func<Column, string> getDotNetTypeName,Func<Table,string> getClassName,Func<Table,string> getNamespaceName,Func<Table,string> getOutputFilePath)
+        public static void ExportTable(Table table,  
+                                       Func<Column, string> getDotNetTypeName,
+                                       Func<Table,string> getEntityNamespaceName,
+                                       Func<Table,string> getRepositoryClassName,
+                                       Func<Table,string> getRepositoryNamespaceName,
+                                       Func<Table,string> getRepositoryOutputFilePath)
         {
             var getMethods = Fun(() => GetRepositoryMethods(table, getDotNetTypeName));
             
-            var content = GetRepositoryFileContent(table, getMethods,getClassName,getNamespaceName);
+            var content = GetRepositoryFileContent(table, getMethods,getRepositoryClassName,getRepositoryNamespaceName,getEntityNamespaceName);
 
-            FileHelper.WriteToFile(getOutputFilePath(table),content);
+            FileHelper.WriteToFile(getRepositoryOutputFilePath(table),content);
         }
 
         static IReadOnlyList<string> GetRepositoryMethods(Table table,  Func<Column, string> getDotNetTypeName)
@@ -88,12 +94,18 @@ namespace DapperEntityGenerator.CodeGeneration
         }
         
         
-        static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, Func<Table,string> getClassName,Func<Table,string> getNamespaceName)
+        static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, Func<Table,string> getClassName, Func<Table,string> getNamespaceName,Func<Table,string> getEntityNamespaceName)
         {
             var lines = new List<string>();
 
-            lines.Add( "using System;");
+            lines.Add("using System.Linq;");
+            lines.Add("using System.Collections.Generic;");
+            lines.Add("using Dapper;");
             lines.Add("using Dapper.Contrib.Extensions;");
+            if (getEntityNamespaceName(table) != getNamespaceName(table))
+            {
+                lines.Add($"using {getEntityNamespaceName(table)};");    
+            }
             
             lines.Add(Empty);
             lines.Add($"namespace {getNamespaceName(table)}");
@@ -107,6 +119,42 @@ namespace DapperEntityGenerator.CodeGeneration
             lines.Add("}");
 
             return FileContentWriter.GetFileContent(lines);
+        }
+
+        public static void ExportRepositoryMainClassDecleration(string namespaceName,string className,string outputFilePath)
+        {
+            outputFilePath = outputFilePath.Replace("{TableName}", "");
+            
+            outputFilePath = Path.Combine(Path.GetDirectoryName(outputFilePath), className + ".cs");
+
+            var lines = new List<string>
+            {
+                "using System;", 
+                "using System.Data;",
+                string.Empty,
+                $"namespace {namespaceName}",
+                "{",
+                $"public partial class {className}",
+                "{", 
+                "readonly IDbConnection dbConnection;",
+                "readonly IDbTransaction dbTransaction;",
+                string.Empty, 
+                $"public {className}(IDbConnection dbConnection, IDbTransaction dbTransaction)", 
+                "{",
+                "if (dbConnection == null)",
+                "{",
+                "throw new ArgumentNullException(nameof(dbConnection));", 
+                "}",
+                string.Empty,
+                "this.dbConnection  = dbConnection;",
+                "this.dbTransaction = dbTransaction;", "}",
+                "}",
+                "}"
+            };
+
+            var content = FileContentWriter.GetFileContent(lines);
+
+            FileHelper.WriteToFile(outputFilePath,content);
         }
     }
 }

@@ -49,15 +49,32 @@ namespace DapperEntityGenerator.UI
                                           },
                                           new Card
                                           {
-                                              Header = "Config",
+                                              Header = "Config For Database",
                                               Childs = new[]
                                               {
                                                   createInput(nameof(EntityGeneratorInput.ConnectionString)),
                                                   createInput(nameof(EntityGeneratorInput.DatabaseName)),
                                                   createInput(nameof(EntityGeneratorInput.SchemaName)),
-                                                  createInput(nameof(EntityGeneratorInput.NamespacePatternForEntity)),
-                                                  createInput(nameof(EntityGeneratorInput.CSharpOutputFilePathForEntity)),
                                                   createInput(nameof(EntityGeneratorInput.ExportTableNames))
+                                              }
+                                          },
+                                          new Card
+                                          {
+                                              Header = "Config For Entity",
+                                              Childs = new[]
+                                              {
+                                                  createInput(nameof(EntityGeneratorInput.NamespacePatternForEntity)),
+                                                  createInput(nameof(EntityGeneratorInput.CSharpOutputFilePathForEntity))
+                                              }
+                                          },
+                                          new Card
+                                          {
+                                              Header = "Config For Repository",
+                                              Childs = new[]
+                                              {
+                                                  createInput(nameof(EntityGeneratorInput.NamespacePatternForRepository)),
+                                                  createInput(nameof(EntityGeneratorInput.ClassNamePatternForRepository)),
+                                                  createInput(nameof(EntityGeneratorInput.CSharpOutputFilePathForRepository))
                                               }
                                           },
                                           new Card

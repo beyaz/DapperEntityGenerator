@@ -7,6 +7,7 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using static System.String;
 using static DapperEntityGenerator.Extensions;
+using static DapperEntityGenerator.NamingPattern;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
@@ -43,7 +44,7 @@ namespace DapperEntityGenerator.CodeGeneration
             var databaseName         = input.DatabaseName;
             var schemaName           = input.SchemaName;
             var exportTableNameList  = getExportableTableNames();
-            var namespacePattern     = input.NamespacePatternForEntity;
+            
             var cSharpOutputFilePath = input.CSharpOutputFilePathForEntity;
 
             IReadOnlyList<string> GetUsingList()
@@ -88,9 +89,11 @@ namespace DapperEntityGenerator.CodeGeneration
             {
                 var lines = new List<string>();
 
+                
+
                 lines.AddRange(GetUsingList());
                 lines.Add(Empty);
-                lines.Add($"namespace {namespacePattern.Replace("{SchemaName}", schemaName)}");
+                lines.Add($"namespace {ResolvePattern(table, input.NamespacePatternForEntity)}");
                 lines.Add("{");
                 lines.AddRange(ConvertToClassDefinition(table));
                 lines.Add("}");
@@ -98,12 +101,10 @@ namespace DapperEntityGenerator.CodeGeneration
                 return lines;
             }
 
-            void GenerateTable(Table table)
+            void ExportEntity(Table table)
             {
-                trace($"Exporting table {table.Name}");
+                trace($"Exporting table entity for {table.Name}");
 
-                RepositoryGenerator.ExportTable(table,GetDotNetDataType,(t)=>NamingPattern.GetRepositoryClassName(t,input.ClassNamePatternForRepository),(t)=>NamingPattern.GetRepositoryNamespaceName(t,input.NamespacePatternForRepository),(t)=>NamingPattern.GetRepositoryClassOutputFilePath(t,input.CSharpOutputFilePathForRepository));
-                
                 var filePath = cSharpOutputFilePath.Replace("{SchemaName}", schemaName).Replace("{TableName}", table.Name);
 
                 var fileContent = FileContentWriter.GetFileContent(ConvertToFileContentLines(table));
@@ -111,7 +112,29 @@ namespace DapperEntityGenerator.CodeGeneration
                 FileHelper.WriteToFile(filePath, fileContent);
             }
 
+            void ExportRepository(Table table)
+            {
+                trace($"Exporting table repository for {table.Name}");
+
+                RepositoryGenerator.ExportTable(table,
+                                                GetDotNetDataType,
+                                                getEntityNamespaceName: t=>ResolvePattern(t,input.NamespacePatternForEntity),
+                                                getRepositoryClassName: t=>ResolvePattern(t,input.ClassNamePatternForRepository),
+                                                getRepositoryNamespaceName: t=>ResolvePattern(t,input.NamespacePatternForRepository),
+                                                getRepositoryOutputFilePath: t=>ResolvePattern(t,input.CSharpOutputFilePathForRepository));
+            }
+
+            void GenerateTable(Table table)
+            {
+                ExportEntity(table);
+                ExportRepository(table);
+            }
+
             var processedTables = Loop(GetTablesInSchema, GenerateTable, updatePercent);
+
+            RepositoryGenerator.ExportRepositoryMainClassDecleration(ResolvePattern(schemaName, input.NamespacePatternForRepository),
+                                                                     ResolvePattern(schemaName, input.ClassNamePatternForRepository),
+                                                                     ResolvePattern(schemaName, input.CSharpOutputFilePathForRepository));
 
             processInfo.Trace   = $"{processedTables.Count} table successfully exported.";
             processInfo.Percent = 100;
