@@ -11,13 +11,13 @@ namespace DapperEntityGenerator.CodeGeneration
     static class  RepositoryGenerator
     {
 
-        public static void ExportTable(Table table, Func<string, string> getVariableName, Func<Column, string> getDotNetTypeName)
+        public static void ExportTable(Table table, Func<string, string> getVariableName, Func<Column, string> getDotNetTypeName,Func<Table,string> getClassName,Func<Table,string> getNamespaceName,Func<Table,string> getOutputFilePath)
         {
             var getMethods = Fun(() => GetRepositoryMethods(table, getVariableName, getDotNetTypeName));
+            
+            var content = GetRepositoryFileContent(table, getMethods,getClassName,getNamespaceName);
 
-            var content = GetRepositoryFileContent(table, getMethods, "AaA", "BbB");
-
-            FileHelper.WriteToFile("d:\\A.cs",content);
+            FileHelper.WriteToFile(getOutputFilePath(table),content);
         }
 
         public static IReadOnlyList<string> GetRepositoryMethods(Table table, Func<string, string> getVariableName, Func<Column, string> getDotNetTypeName)
@@ -62,37 +62,44 @@ namespace DapperEntityGenerator.CodeGeneration
 
             });
 
+
+
+            return JoinMethodLines(table.Indexes.ToEnumeration().Select(getLinesOfIndexMethod));
+
+          
+        }
+
+        static List<string> JoinMethodLines(IEnumerable<List<string>> parts)
+        {
             var returnList = new List<string>();
 
             var i = 0;
-            foreach (Index index in table.Indexes)
+            foreach (var items in parts)
             {
                 if (i>0)
                 {
                     returnList.Add(Empty);
                 }
 
-                returnList.AddRange(getLinesOfIndexMethod(index));
+                returnList.AddRange(items);
                 i++;
             }
 
             return returnList;
         }
         
-        public static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, string namespacePattern,string repositoryClassNamePattern)
+        
+        public static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, Func<Table,string> getClassName,Func<Table,string> getNamespaceName)
         {
             var lines = new List<string>();
-
-            var className = repositoryClassNamePattern.Replace("{SchemaName}", table.Schema).Replace("{TableName}", table.Name);
-            var namespaceName = namespacePattern.Replace("{SchemaName}", table.Schema).Replace("{TableName}", table.Name);
 
             lines.Add( "using System;");
             lines.Add("using Dapper.Contrib.Extensions;");
             
             lines.Add(Empty);
-            lines.Add($"namespace {namespaceName}");
+            lines.Add($"namespace {getNamespaceName(table)}");
             lines.Add("{");
-            lines.Add($"partial class {className}");
+            lines.Add($"partial class {getClassName(table)}");
             lines.Add("{");
 
             lines.AddRange(getMethods());

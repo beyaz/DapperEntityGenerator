@@ -12,6 +12,8 @@ namespace DapperEntityGenerator.CodeGeneration
         public string ExportTableNames { get; set; }
         public string NamespacePattern { get; set; }
         public string SchemaName { get; set; }
+
+        public string CSharpOutputFilePathForRepository { get; set; }
         #endregion
     }
 }
