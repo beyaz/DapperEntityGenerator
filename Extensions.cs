@@ -155,6 +155,15 @@ namespace DapperEntityGenerator
                 }
             }
 
+            public static IEnumerable<ForeignKey> ToEnumeration(this ForeignKeyCollection collection)
+            {
+                foreach (ForeignKey item in collection)
+                {
+                    yield return item;
+                }
+            }
+            
+
             
     }
 }

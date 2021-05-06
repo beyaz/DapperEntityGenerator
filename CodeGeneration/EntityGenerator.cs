@@ -13,6 +13,46 @@ namespace DapperEntityGenerator.CodeGeneration
 {
     static class EntityGenerator
     {
+        static bool IsForeignKey(Table source, Table target)
+        {
+            foreach (ForeignKey foreignKey in target.ForeignKeys)
+            {
+                if (foreignKey.ReferencedTable == source.Name)
+                {
+                    if (foreignKey.ReferencedTableSchema == source.Schema)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        public static IReadOnlyList<string> GetRelatedDataContract(Table table, IReadOnlyList<Table> searchTables)
+        {
+            var lines = new List<string>();
+
+            if (!table.HasPrimaryClusteredIndex)
+            {
+                return lines;
+            }
+
+            var foreignKeyTables = searchTables.Where(t=>IsForeignKey(table,t)).ToList();
+
+            lines.Add("[Serializable]");
+            lines.Add($"public sealed class {table.Name}RelatedData");
+            lines.Add("{");
+            foreach (var foreignKeyTable in foreignKeyTables)
+            {
+                lines.Add($"public IReadOnly<{foreignKeyTable.Name}> {foreignKeyTable.Name} {{ get; set; }}");
+            }
+            
+            lines.Add("}");
+
+            return lines;
+        }
+
+
         #region Public Methods
         public static void GenerateSchema(EntityGeneratorInput input, ProcessInfo processInfo)
         {
@@ -96,6 +136,9 @@ namespace DapperEntityGenerator.CodeGeneration
                 lines.Add($"namespace {ResolvePattern(table, input.NamespacePatternForEntity)}");
                 lines.Add("{");
                 lines.AddRange(ConvertToClassDefinition(table));
+
+                lines.AddRange(GetRelatedDataContract(table, GetTablesInSchema()));
+
                 lines.Add("}");
 
                 return lines;
@@ -103,6 +146,8 @@ namespace DapperEntityGenerator.CodeGeneration
 
             void ExportEntity(Table table)
             {
+                
+
                 trace($"Exporting table entity for {table.Name}");
 
                 var filePath = cSharpOutputFilePath.Replace("{SchemaName}", schemaName).Replace("{TableName}", table.Name);

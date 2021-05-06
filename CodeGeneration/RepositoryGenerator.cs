@@ -13,6 +13,9 @@ namespace DapperEntityGenerator.CodeGeneration
     static class  RepositoryGenerator
     {
 
+
+
+
         public static void ExportTable(Table table,  
                                        Func<Column, string> getDotNetTypeName,
                                        Func<Table,string> getEntityNamespaceName,
