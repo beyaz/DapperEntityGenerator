@@ -11,9 +11,6 @@ namespace DapperEntityGenerator.CodeGeneration
 {
     static class EntityGenerator
     {
-
-        
-
         #region Public Methods
         public static void GenerateSchema(EntityGeneratorInput input, ProcessInfo processInfo)
         {
@@ -27,17 +24,13 @@ namespace DapperEntityGenerator.CodeGeneration
                 processInfo.Percent = percent;
             }
 
-           
-
             trace("Started.");
 
             updatePercent(3);
 
-            var connectionString    = input.ConnectionString;
-            var databaseName        = input.DatabaseName;
-            var schemaName          = input.SchemaName;
-            
-
+            var connectionString = input.ConnectionString;
+            var databaseName     = input.DatabaseName;
+            var schemaName       = input.SchemaName;
 
             IReadOnlyList<Table> GetTablesInSchema()
             {
@@ -109,15 +102,13 @@ namespace DapperEntityGenerator.CodeGeneration
                 FileHelper.WriteToFile(filePath, fileContent);
             }
 
-          
-
             void GenerateTable(Table table)
             {
                 trace($"Exporting table entity for {table.Name}");
                 ExportEntity(table);
 
                 trace($"Exporting table repository for {table.Name}");
-                RepositoryGenerator.ExportRepository(table,input);
+                RepositoryGenerator.ExportRepository(table, input);
             }
 
             var processedTables = Loop(GetTablesInSchema, GenerateTable, updatePercent);
