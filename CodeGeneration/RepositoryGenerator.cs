@@ -12,16 +12,21 @@ namespace DapperEntityGenerator.CodeGeneration
 {
     static class  RepositoryGenerator
     {
-
-
-
+        public static void ExportRepository(Table table,EntityGeneratorInput input)
+        {
+            RepositoryGenerator.ExportTable(table, SqlTypeToDotNetTypeMap.GetDotNetDataType,
+                                            getEntityNamespaceName: t => ResolvePattern(t, input.NamespacePatternForEntity),
+                                            getRepositoryClassName: t => ResolvePattern(t, input.ClassNamePatternForRepository),
+                                            getRepositoryNamespaceName: t => ResolvePattern(t, input.NamespacePatternForRepository),
+                                            getRepositoryOutputFilePath: t => ResolvePattern(t, input.CSharpOutputFilePathForRepository));
+        }
 
         public static void ExportTable(Table table,  
                                        Func<Column, string> getDotNetTypeName,
-                                       Func<Table,string> getEntityNamespaceName,
-                                       Func<Table,string> getRepositoryClassName,
-                                       Func<Table,string> getRepositoryNamespaceName,
-                                       Func<Table,string> getRepositoryOutputFilePath)
+                                       Func<Table, string> getEntityNamespaceName,
+                                       Func<Table, string> getRepositoryClassName,
+                                       Func<Table, string> getRepositoryNamespaceName,
+                                       Func<Table, string> getRepositoryOutputFilePath)
         {
             var getMethods = Fun(() => GetRepositoryMethods(table, getDotNetTypeName));
             
@@ -58,14 +63,14 @@ namespace DapperEntityGenerator.CodeGeneration
 
                 
 
-                    lines.Add($"public IReadOnlyList<{table.Name}> Get{table.Name}By{Join("And", columnNames)}({Join(",", parameters.Select(p => p.DotNetType + " " + p.Name))})");
-                    lines.Add("{");
+                lines.Add($"public IReadOnlyList<{table.Name}> Get{table.Name}By{Join("And", columnNames)}({Join(",", parameters.Select(p => p.DotNetType + " " + p.Name))})");
+                lines.Add("{");
 
-                    lines.Add($"return dbConnection.Query<{table.Name}>(\"{sqlPart}\", {parameterPart}).ToList();");
+                lines.Add($"return dbConnection.Query<{table.Name}>(\"{sqlPart}\", {parameterPart}).ToList();");
 
-                    lines.Add("}");
+                lines.Add("}");
 
-                    return lines;
+                return lines;
                 
 
             });
@@ -128,7 +133,7 @@ namespace DapperEntityGenerator.CodeGeneration
         }
         
         
-        static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, Func<Table,string> getClassName, Func<Table,string> getNamespaceName,Func<Table,string> getEntityNamespaceName)
+        static string GetRepositoryFileContent(Table table, Func<IReadOnlyList<string>> getMethods, Func<Table, string> getClassName, Func<Table, string> getNamespaceName,Func<Table, string> getEntityNamespaceName)
         {
             var lines = new List<string>();
 

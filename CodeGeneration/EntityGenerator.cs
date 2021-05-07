@@ -11,6 +11,9 @@ namespace DapperEntityGenerator.CodeGeneration
 {
     static class EntityGenerator
     {
+
+        
+
         #region Public Methods
         public static void GenerateSchema(EntityGeneratorInput input, ProcessInfo processInfo)
         {
@@ -106,14 +109,7 @@ namespace DapperEntityGenerator.CodeGeneration
                 FileHelper.WriteToFile(filePath, fileContent);
             }
 
-            void ExportRepository(Table table)
-            {
-                RepositoryGenerator.ExportTable(table, SqlTypeToDotNetTypeMap.GetDotNetDataType,
-                                                getEntityNamespaceName: t => ResolvePattern(t, input.NamespacePatternForEntity),
-                                                getRepositoryClassName: t => ResolvePattern(t, input.ClassNamePatternForRepository),
-                                                getRepositoryNamespaceName: t => ResolvePattern(t, input.NamespacePatternForRepository),
-                                                getRepositoryOutputFilePath: t => ResolvePattern(t, input.CSharpOutputFilePathForRepository));
-            }
+          
 
             void GenerateTable(Table table)
             {
@@ -121,7 +117,7 @@ namespace DapperEntityGenerator.CodeGeneration
                 ExportEntity(table);
 
                 trace($"Exporting table repository for {table.Name}");
-                ExportRepository(table);
+                RepositoryGenerator.ExportRepository(table,input);
             }
 
             var processedTables = Loop(GetTablesInSchema, GenerateTable, updatePercent);
