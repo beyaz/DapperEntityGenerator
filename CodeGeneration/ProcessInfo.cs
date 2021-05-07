@@ -13,6 +13,7 @@ namespace DapperEntityGenerator.CodeGeneration
         ///     Gets or sets the percent.
         /// </summary>
         public int Percent { get; set; }
+
         /// <summary>
         ///     Gets or sets the trace.
         /// </summary>

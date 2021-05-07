@@ -3,12 +3,12 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace DapperEntityGenerator
 {
-
     /// <summary>
-    /// The naming pattern resolver
+    ///     The naming pattern resolver
     /// </summary>
     static class NamingPatternResolver
     {
+        #region Public Methods
         /// <summary>
         ///     Gets the name of the variable.
         /// </summary>
@@ -28,12 +28,10 @@ namespace DapperEntityGenerator
             return firstChar + columnName.Substring(1);
         }
 
-
-
         /// <summary>
         ///     Resolves the pattern.
         /// </summary>
-        public static string ResolvePattern(Table table,string pattern)
+        public static string ResolvePattern(Table table, string pattern)
         {
             return pattern.Replace("{SchemaName}", table.Schema).Replace("{TableName}", table.Name);
         }
@@ -41,11 +39,10 @@ namespace DapperEntityGenerator
         /// <summary>
         ///     Resolves the pattern.
         /// </summary>
-        public static string ResolvePattern(string schemaName,string pattern)
+        public static string ResolvePattern(string schemaName, string pattern)
         {
             return pattern.Replace("{SchemaName}", schemaName);
         }
-
-        
+        #endregion
     }
 }

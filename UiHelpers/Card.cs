@@ -8,15 +8,17 @@ namespace DapperEntityGenerator.UiHelpers
     /// </summary>
     public sealed class Card
     {
-        #region Public Properties        
+        #region Public Properties
         /// <summary>
-        /// Gets or sets the children.
+        ///     Gets or sets the children.
         /// </summary>
         public IReadOnlyList<FrameworkElement> Children { get; set; }
+
         /// <summary>
         ///     Gets or sets the header.
         /// </summary>
         public string Header { get; set; }
+
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is horizontal.
         /// </summary>

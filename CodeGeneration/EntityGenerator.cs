@@ -78,7 +78,7 @@ namespace DapperEntityGenerator.CodeGeneration
                     "{"
                 };
                 lines.AddRange(ConvertToClassDefinition(table));
-                
+
                 lines.Add("}");
 
                 lines.InsertRange(0, usingLines);
@@ -102,7 +102,7 @@ namespace DapperEntityGenerator.CodeGeneration
             }
 
             var processedTables = Loop(GetTablesInSchema, GenerateTable, updatePercent);
-            
+
             trace($"{processedTables.Count} table successfully exported.");
             updatePercent(100);
         }

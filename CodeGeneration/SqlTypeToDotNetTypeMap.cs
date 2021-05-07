@@ -8,6 +8,7 @@ namespace DapperEntityGenerator.CodeGeneration
     /// </summary>
     static class SqlTypeToDotNetTypeMap
     {
+        #region Public Methods
         /// <summary>
         ///     Gets the type of the dot net data.
         /// </summary>
@@ -65,5 +66,6 @@ namespace DapperEntityGenerator.CodeGeneration
                     throw new Exception(sqlDataTypeName);
             }
         }
+        #endregion
     }
 }

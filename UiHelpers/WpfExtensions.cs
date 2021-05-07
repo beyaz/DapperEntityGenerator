@@ -21,6 +21,7 @@ namespace DapperEntityGenerator.UiHelpers
         ///     The default margin
         /// </summary>
         const int DefaultMargin = 10;
+
         /// <summary>
         ///     The mini indent
         /// </summary>
@@ -79,7 +80,7 @@ namespace DapperEntityGenerator.UiHelpers
 
             stackPanel.Children.Add(new TextBlock {FontSize = 16, Foreground = LabelBrush, Text = data.Header});
 
-            foreach (FrameworkElement element in data.Children ?? new FrameworkElement[0])
+            foreach (var element in data.Children ?? new FrameworkElement[0])
             {
                 stackPanel.Children.Add(element);
             }

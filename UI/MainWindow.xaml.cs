@@ -3,12 +3,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using DapperEntityGenerator.CodeGeneration;
+using DapperEntityGenerator.UiHelpers;
 using static DapperEntityGenerator.Extensions;
 using static DapperEntityGenerator.UiHelpers.Layout;
 using static DapperEntityGenerator.UiHelpers.WpfExtensions;
-using  DapperEntityGenerator.UiHelpers;
-
-
 
 namespace DapperEntityGenerator.UI
 {
@@ -38,7 +36,7 @@ namespace DapperEntityGenerator.UI
 
         #region Constructors
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MainWindow"/> class.
+        ///     Initializes a new instance of the <see cref="MainWindow" /> class.
         /// </summary>
         public MainWindow()
         {

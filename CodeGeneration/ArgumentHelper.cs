@@ -8,6 +8,7 @@ namespace DapperEntityGenerator.CodeGeneration
     /// </summary>
     static class ArgumentHelper
     {
+        #region Public Methods
         /// <summary>
         ///     Gets the exportable table names.
         /// </summary>
@@ -20,5 +21,6 @@ namespace DapperEntityGenerator.CodeGeneration
 
             return exportTableNames.Split(',').ToList();
         }
+        #endregion
     }
 }
