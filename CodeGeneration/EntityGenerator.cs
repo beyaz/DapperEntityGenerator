@@ -19,6 +19,18 @@ namespace DapperEntityGenerator.CodeGeneration
         #endregion
     }
 
+    static class ArgumentHelper
+    {
+        public static IList<string> GetExportableTableNames(string exportTableNames)
+        {
+            if (exportTableNames == null || exportTableNames == "*")
+            {
+                return new List<string>();
+            }
+
+            return exportTableNames.Split(',').ToList();
+        }
+    }
     static class EntityGenerator
     {
         #region Public Methods
@@ -34,15 +46,7 @@ namespace DapperEntityGenerator.CodeGeneration
                 processInfo.Percent = percent;
             }
 
-            IList<string> getExportableTableNames()
-            {
-                if (input.ExportTableNames == null || input.ExportTableNames == "*")
-                {
-                    return new List<string>();
-                }
-
-                return input.ExportTableNames.Split(',').ToList();
-            }
+           
 
             trace("Started.");
 
@@ -51,22 +55,16 @@ namespace DapperEntityGenerator.CodeGeneration
             var connectionString    = input.ConnectionString;
             var databaseName        = input.DatabaseName;
             var schemaName          = input.SchemaName;
-            var exportTableNameList = getExportableTableNames();
+            
 
-            IReadOnlyList<string> GetUsingList()
-            {
-                return new[]
-                {
-                    "using System;",
-                    "using Dapper.Contrib.Extensions;"
-                };
-            }
 
             IReadOnlyList<Table> GetTablesInSchema()
             {
                 var sqlConnection    = new SqlConnection(connectionString);
                 var serverConnection = new ServerConnection(sqlConnection);
                 var server           = new Server(serverConnection);
+
+                var exportTableNameList = ArgumentHelper.GetExportableTableNames(input.ExportTableNames);
 
                 var tables = new List<Table>();
 
@@ -93,7 +91,11 @@ namespace DapperEntityGenerator.CodeGeneration
 
             IReadOnlyList<string> ConvertToFileContentLines(Table table)
             {
-                var usingLines = new List<string>(GetUsingList());
+                var usingLines = new List<string>
+                {
+                    "using System;",
+                    "using Dapper.Contrib.Extensions;"
+                };
 
                 var lines = new List<string>();
 
