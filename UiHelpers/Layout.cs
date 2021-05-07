@@ -1,4 +1,4 @@
-﻿namespace DapperEntityGenerator.UI
+﻿namespace DapperEntityGenerator.UiHelpers
 {
     /// <summary>
     ///     The layout

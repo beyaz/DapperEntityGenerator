@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
 
-namespace DapperEntityGenerator.UI
+namespace DapperEntityGenerator.UiHelpers
 {
     /// <summary>
     ///     The WPF extensions

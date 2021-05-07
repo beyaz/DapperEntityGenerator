@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 
-namespace DapperEntityGenerator.UI
+namespace DapperEntityGenerator.UiHelpers
 {
     /// <summary>
     ///     The card
