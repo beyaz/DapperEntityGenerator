@@ -11,48 +11,17 @@ using static DapperEntityGenerator.NamingPattern;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
+    class ForeignKeyInfo
+    {
+        #region Public Properties
+        public bool IsUnique { get; set; }
+        public Table Source { get; set; }
+        public Table Target { get; set; }
+        #endregion
+    }
+
     static class EntityGenerator
     {
-        static bool IsForeignKey(Table source, Table target)
-        {
-            foreach (ForeignKey foreignKey in target.ForeignKeys)
-            {
-                if (foreignKey.ReferencedTable == source.Name)
-                {
-                    if (foreignKey.ReferencedTableSchema == source.Schema)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-        public static IReadOnlyList<string> GetRelatedDataContract(Table table, IReadOnlyList<Table> searchTables)
-        {
-            var lines = new List<string>();
-
-            if (!table.HasPrimaryClusteredIndex)
-            {
-                return lines;
-            }
-
-            var foreignKeyTables = searchTables.Where(t=>IsForeignKey(table,t)).ToList();
-
-            lines.Add("[Serializable]");
-            lines.Add($"public sealed class {table.Name}RelatedData");
-            lines.Add("{");
-            foreach (var foreignKeyTable in foreignKeyTables)
-            {
-                lines.Add($"public IReadOnly<{foreignKeyTable.Name}> {foreignKeyTable.Name} {{ get; set; }}");
-            }
-            
-            lines.Add("}");
-
-            return lines;
-        }
-
-
         #region Public Methods
         public static void GenerateSchema(EntityGeneratorInput input, ProcessInfo processInfo)
         {
@@ -80,11 +49,11 @@ namespace DapperEntityGenerator.CodeGeneration
 
             updatePercent(3);
 
-            var connectionString     = input.ConnectionString;
-            var databaseName         = input.DatabaseName;
-            var schemaName           = input.SchemaName;
-            var exportTableNameList  = getExportableTableNames();
-            
+            var connectionString    = input.ConnectionString;
+            var databaseName        = input.DatabaseName;
+            var schemaName          = input.SchemaName;
+            var exportTableNameList = getExportableTableNames();
+
             var cSharpOutputFilePath = input.CSharpOutputFilePathForEntity;
 
             IReadOnlyList<string> GetUsingList()
@@ -127,27 +96,31 @@ namespace DapperEntityGenerator.CodeGeneration
 
             IReadOnlyList<string> ConvertToFileContentLines(Table table)
             {
+                var usingLines = new List<string>(GetUsingList());
+
                 var lines = new List<string>();
 
-                
-
-                lines.AddRange(GetUsingList());
                 lines.Add(Empty);
                 lines.Add($"namespace {ResolvePattern(table, input.NamespacePatternForEntity)}");
                 lines.Add("{");
                 lines.AddRange(ConvertToClassDefinition(table));
 
-                lines.AddRange(GetRelatedDataContract(table, GetTablesInSchema()));
+                //var relatedDataContract = GetRelatedDataContract(table, GetTablesInSchema());
+                //if (relatedDataContract.Count > 0)
+                //{
+                //    usingLines.Add("using System.Collections.Generic;");
+                //    lines.AddRange(relatedDataContract);
+                //}
 
                 lines.Add("}");
+
+                lines.InsertRange(0, usingLines);
 
                 return lines;
             }
 
             void ExportEntity(Table table)
             {
-                
-
                 trace($"Exporting table entity for {table.Name}");
 
                 var filePath = cSharpOutputFilePath.Replace("{SchemaName}", schemaName).Replace("{TableName}", table.Name);
@@ -163,10 +136,10 @@ namespace DapperEntityGenerator.CodeGeneration
 
                 RepositoryGenerator.ExportTable(table,
                                                 GetDotNetDataType,
-                                                getEntityNamespaceName: t=>ResolvePattern(t,input.NamespacePatternForEntity),
-                                                getRepositoryClassName: t=>ResolvePattern(t,input.ClassNamePatternForRepository),
-                                                getRepositoryNamespaceName: t=>ResolvePattern(t,input.NamespacePatternForRepository),
-                                                getRepositoryOutputFilePath: t=>ResolvePattern(t,input.CSharpOutputFilePathForRepository));
+                                                getEntityNamespaceName: t => ResolvePattern(t, input.NamespacePatternForEntity),
+                                                getRepositoryClassName: t => ResolvePattern(t, input.ClassNamePatternForRepository),
+                                                getRepositoryNamespaceName: t => ResolvePattern(t, input.NamespacePatternForRepository),
+                                                getRepositoryOutputFilePath: t => ResolvePattern(t, input.CSharpOutputFilePathForRepository));
             }
 
             void GenerateTable(Table table)
@@ -184,10 +157,45 @@ namespace DapperEntityGenerator.CodeGeneration
             processInfo.Trace   = $"{processedTables.Count} table successfully exported.";
             processInfo.Percent = 100;
         }
+
+        public static IReadOnlyList<string> GetRelatedDataContract(Table table, IReadOnlyList<Table> searchTables)
+        {
+            var lines = new List<string>();
+
+            if (!table.HasPrimaryClusteredIndex)
+            {
+                return lines;
+            }
+
+            var foreignKeyTables = TryGetForeignKeyInfo(table, searchTables);
+            if (foreignKeyTables.Count == 0)
+            {
+                return lines;
+            }
+
+            lines.Add("[Serializable]");
+            lines.Add($"public sealed class {table.Name}RelatedData");
+            lines.Add("{");
+            lines.Add($"public {table.Name} {table.Name} {{ get; set; }}");
+
+            foreach (var foreignKeyInfo in foreignKeyTables)
+            {
+                var tableName = foreignKeyInfo.Target.Name;
+
+                if (foreignKeyInfo.IsUnique)
+                {
+                    lines.Add($"public {tableName} {tableName} {{ get; set; }}");
+                    continue;
+                }
+
+                lines.Add($"public IReadOnlyList<{tableName}> {tableName} {{ get; set; }}");
+            }
+
+            lines.Add("}");
+
+            return lines;
+        }
         #endregion
-
-       
-
 
         #region Methods
         static IReadOnlyList<string> ConvertToClassDefinition(Table table)
@@ -236,6 +244,7 @@ namespace DapperEntityGenerator.CodeGeneration
         {
             return GetDotNetDataType(column.DataType.Name);
         }
+
         static string GetDotNetDataType(string sqlDataTypeName)
         {
             switch (sqlDataTypeName.ToLower())
@@ -281,6 +290,54 @@ namespace DapperEntityGenerator.CodeGeneration
                 default:
                     throw new Exception(sqlDataTypeName);
             }
+        }
+
+        static ForeignKeyInfo TryGetForeignKeyInfo(Table source, Table target)
+        {
+            if (source.Schema == target.Schema && source.Name == target.Name)
+            {
+                return null;
+            }
+
+            foreach (ForeignKey foreignKey in target.ForeignKeys)
+            {
+                if (foreignKey.ReferencedTable == source.Name)
+                {
+                    if (foreignKey.ReferencedTableSchema == source.Schema)
+                    {
+                        foreach (Index index in target.Indexes)
+                        {
+                            if (index.IsUnique)
+                            {
+                                if (index.IndexedColumns.Count == 1 && index.IndexedColumns[0].Name == foreignKey.Columns[0].Name)
+                                {
+                                    return new ForeignKeyInfo {Source = source, Target = target, IsUnique = true};
+                                }
+                            }
+                        }
+
+                        return new ForeignKeyInfo {Source = source, Target = target, IsUnique = false};
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        static IReadOnlyList<ForeignKeyInfo> TryGetForeignKeyInfo(Table source, IReadOnlyList<Table> searchTables)
+        {
+            var items = new List<ForeignKeyInfo>();
+
+            foreach (var target in searchTables)
+            {
+                var foreignKeyInfo = TryGetForeignKeyInfo(source, target);
+                if (foreignKeyInfo != null)
+                {
+                    items.Add(foreignKeyInfo);
+                }
+            }
+
+            return items;
         }
         #endregion
     }
