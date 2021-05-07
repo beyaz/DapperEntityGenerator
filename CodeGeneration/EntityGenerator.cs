@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using DapperEntityGenerator.IO;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -10,27 +9,6 @@ using static DapperEntityGenerator.NamingPattern;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
-    class ForeignKeyInfo
-    {
-        #region Public Properties
-        public bool IsUnique { get; set; }
-        public Table Source { get; set; }
-        public Table Target { get; set; }
-        #endregion
-    }
-
-    static class ArgumentHelper
-    {
-        public static IList<string> GetExportableTableNames(string exportTableNames)
-        {
-            if (exportTableNames == null || exportTableNames == "*")
-            {
-                return new List<string>();
-            }
-
-            return exportTableNames.Split(',').ToList();
-        }
-    }
     static class EntityGenerator
     {
         #region Public Methods
@@ -97,11 +75,12 @@ namespace DapperEntityGenerator.CodeGeneration
                     "using Dapper.Contrib.Extensions;"
                 };
 
-                var lines = new List<string>();
-
-                lines.Add(Empty);
-                lines.Add($"namespace {ResolvePattern(table, input.NamespacePatternForEntity)}");
-                lines.Add("{");
+                var lines = new List<string>
+                {
+                    Empty,
+                    $"namespace {ResolvePattern(table, input.NamespacePatternForEntity)}",
+                    "{"
+                };
                 lines.AddRange(ConvertToClassDefinition(table));
 
                 //var relatedDataContract = GetRelatedDataContract(table, GetTablesInSchema());
