@@ -54,7 +54,7 @@ namespace DapperEntityGenerator.UI
             Content = CreateCardContainer(new Card
                                           {
                                               Header = "Actions",
-                                              Childs = new[]
+                                              Children = new[]
                                               {
                                                   NewStackPanel(HorizontalWithDefaultIndent, NewActionButton("Generate", "Generating...", GenerateClicked))
                                               }
@@ -62,7 +62,7 @@ namespace DapperEntityGenerator.UI
                                           new Card
                                           {
                                               Header = "Config For Database",
-                                              Childs = new[]
+                                              Children = new[]
                                               {
                                                   createInput(nameof(EntityGeneratorInput.ConnectionString)),
                                                   createInput(nameof(EntityGeneratorInput.DatabaseName)),
@@ -73,7 +73,7 @@ namespace DapperEntityGenerator.UI
                                           new Card
                                           {
                                               Header = "Config For Entity",
-                                              Childs = new[]
+                                              Children = new[]
                                               {
                                                   createInput(nameof(EntityGeneratorInput.NamespacePatternForEntity)),
                                                   createInput(nameof(EntityGeneratorInput.CSharpOutputFilePathForEntity))
@@ -82,7 +82,7 @@ namespace DapperEntityGenerator.UI
                                           new Card
                                           {
                                               Header = "Trace",
-                                              Childs = new[]
+                                              Children = new[]
                                               {
                                                   NewStackPanel(VerticalWithMiniIndent, traceText, progressBar)
                                               }

@@ -79,7 +79,7 @@ namespace DapperEntityGenerator.UiHelpers
 
             stackPanel.Children.Add(new TextBlock {FontSize = 16, Foreground = LabelBrush, Text = data.Header});
 
-            foreach (UIElement element in data.Childs ?? new FrameworkElement[0])
+            foreach (FrameworkElement element in data.Children ?? new FrameworkElement[0])
             {
                 stackPanel.Children.Add(element);
             }
@@ -152,8 +152,6 @@ namespace DapperEntityGenerator.UiHelpers
             {
                 UpdateUiAfterSleep(textBlock.Dispatcher, 10, () => textBlock.Text = label);
             }
-
-            ;
 
             border.MouseLeftButtonDown += (s, e) =>
             {
