@@ -154,8 +154,8 @@ namespace DapperEntityGenerator.CodeGeneration
                                                                      ResolvePattern(schemaName, input.ClassNamePatternForRepository),
                                                                      ResolvePattern(schemaName, input.CSharpOutputFilePathForRepository));
 
-            processInfo.Trace   = $"{processedTables.Count} table successfully exported.";
-            processInfo.Percent = 100;
+            trace($"{processedTables.Count} table successfully exported.");
+            updatePercent(100);
         }
 
         public static IReadOnlyList<string> GetRelatedDataContract(Table table, IReadOnlyList<Table> searchTables)
