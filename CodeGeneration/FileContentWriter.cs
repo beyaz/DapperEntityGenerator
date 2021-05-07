@@ -3,9 +3,15 @@ using System.Text;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
+    /// <summary>
+    ///     The file content writer
+    /// </summary>
     static class FileContentWriter
     {
         #region Public Methods
+        /// <summary>
+        ///     Gets the content of the file.
+        /// </summary>
         public static string GetFileContent(IReadOnlyList<string> lines)
         {
             var sb = new StringBuilder();

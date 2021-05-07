@@ -8,6 +8,9 @@ namespace DapperEntityGenerator.UI
     public partial class App : Application
     {
         #region Methods
+        /// <summary>
+        ///     Called when [startup].
+        /// </summary>
         void OnStartup(object sender, StartupEventArgs e)
         {
             MainWindow = new MainWindow();

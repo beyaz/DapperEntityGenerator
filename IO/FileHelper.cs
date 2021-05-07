@@ -3,6 +3,9 @@ using System.IO;
 
 namespace DapperEntityGenerator.IO
 {
+    /// <summary>
+    ///     The file helper
+    /// </summary>
     static class FileHelper
     {
         #region Public Methods

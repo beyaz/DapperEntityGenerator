@@ -15,12 +15,18 @@ namespace DapperEntityGenerator.UI
     public partial class MainWindow : Window
     {
         #region Fields
+        /// <summary>
+        ///     The progress bar
+        /// </summary>
         ProgressBar progressBar = new ProgressBar
         {
             Value  = 0,
             Height = 10
         };
 
+        /// <summary>
+        ///     The trace text
+        /// </summary>
         TextBlock traceText = new TextBlock
         {
             Text = "Ready"
@@ -28,6 +34,9 @@ namespace DapperEntityGenerator.UI
         #endregion
 
         #region Constructors
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
             Model = CacheHelper.GetMainWindowModelFromCache();
@@ -81,12 +90,21 @@ namespace DapperEntityGenerator.UI
         #endregion
 
         #region Public Properties
+        /// <summary>
+        ///     Gets or sets the model.
+        /// </summary>
         public EntityGeneratorInput Model { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the process information.
+        /// </summary>
         public ProcessInfo ProcessInfo { get; set; } = new ProcessInfo {Trace = "Ready", Percent = 0};
         #endregion
 
         #region Methods
+        /// <summary>
+        ///     Generates the clicked.
+        /// </summary>
         void GenerateClicked(Action onFinished)
         {
             void updateProcessIndicator()

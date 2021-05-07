@@ -3,13 +3,22 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
+    /// <summary>
+    ///     The SQL type to dot net type map
+    /// </summary>
     static class SqlTypeToDotNetTypeMap
     {
+        /// <summary>
+        ///     Gets the type of the dot net data.
+        /// </summary>
         public static string GetDotNetDataType(Column column)
         {
             return GetDotNetDataType(column.DataType.Name);
         }
 
+        /// <summary>
+        ///     Gets the type of the dot net data.
+        /// </summary>
         public static string GetDotNetDataType(string sqlDataTypeName)
         {
             switch (sqlDataTypeName.ToLower())

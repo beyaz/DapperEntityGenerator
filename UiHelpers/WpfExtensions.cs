@@ -11,18 +11,33 @@ using System.Windows.Threading;
 
 namespace DapperEntityGenerator.UI
 {
+    /// <summary>
+    ///     The WPF extensions
+    /// </summary>
     static class WpfExtensions
     {
         #region Constants
+        /// <summary>
+        ///     The default margin
+        /// </summary>
         const int DefaultMargin = 10;
+        /// <summary>
+        ///     The mini indent
+        /// </summary>
         const int MiniIndent = 5;
         #endregion
 
         #region Properties
+        /// <summary>
+        ///     Gets the label brush.
+        /// </summary>
         static Brush LabelBrush => ToBrush("#596B75");
         #endregion
 
         #region Public Methods
+        /// <summary>
+        ///     Binds the specified target.
+        /// </summary>
         public static void Bind(DependencyObject target, DependencyProperty dependencyProperty, object source, string propertyPath)
         {
             BindingOperations.SetBinding(target, dependencyProperty, new Binding
@@ -34,6 +49,9 @@ namespace DapperEntityGenerator.UI
             });
         }
 
+        /// <summary>
+        ///     Creates the specified data.
+        /// </summary>
         public static Border Create(Card data)
         {
             var stackPanel = new StackPanel
@@ -71,6 +89,9 @@ namespace DapperEntityGenerator.UI
             return border;
         }
 
+        /// <summary>
+        ///     Creates the card container.
+        /// </summary>
         public static Panel CreateCardContainer(params Card[] cardPanels)
         {
             var cards = cardPanels.ToList().ConvertAll(Create);
@@ -96,6 +117,9 @@ namespace DapperEntityGenerator.UI
             return container;
         }
 
+        /// <summary>
+        ///     Creates the timer.
+        /// </summary>
         public static Timer CreateTimer(Dispatcher dispatcher, Action onTimeElapsed)
         {
             var timer = new Timer(200);
@@ -105,6 +129,9 @@ namespace DapperEntityGenerator.UI
             return timer;
         }
 
+        /// <summary>
+        ///     News the action button.
+        /// </summary>
         public static FrameworkElement NewActionButton(string label, string clickedLabel, Action<Action> onClick)
         {
             var textBlock = new TextBlock
@@ -138,6 +165,9 @@ namespace DapperEntityGenerator.UI
             return border;
         }
 
+        /// <summary>
+        ///     News the simple input editor.
+        /// </summary>
         public static FrameworkElement NewSimpleInputEditor(string label, object model, string bindingPath)
         {
             TextBlock NewLabel(string text)
@@ -165,6 +195,9 @@ namespace DapperEntityGenerator.UI
             return NewStackPanel(Layout.VerticalWithMiniIndent, NewLabel(label), border);
         }
 
+        /// <summary>
+        ///     News the stack panel.
+        /// </summary>
         public static StackPanel NewStackPanel(Layout layout, params FrameworkElement[] childElements)
         {
             var sp = new StackPanel();
@@ -192,6 +225,9 @@ namespace DapperEntityGenerator.UI
             return sp;
         }
 
+        /// <summary>
+        ///     Updates the UI after sleep.
+        /// </summary>
         public static void UpdateUiAfterSleep(Dispatcher dispatcher, int sleepMilliseconds, Action action)
         {
             Task.Run(async () =>
@@ -203,11 +239,17 @@ namespace DapperEntityGenerator.UI
         #endregion
 
         #region Methods
+        /// <summary>
+        ///     To the brush.
+        /// </summary>
         static Brush ToBrush(string hexaDecimalColorValue)
         {
             return new SolidColorBrush((Color) ColorConverter.ConvertFromString(hexaDecimalColorValue));
         }
 
+        /// <summary>
+        ///     Withes the indent.
+        /// </summary>
         static StackPanel WithIndent(this StackPanel stackPanel, int indent)
         {
             var i = 0;

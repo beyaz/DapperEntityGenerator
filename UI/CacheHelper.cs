@@ -6,13 +6,22 @@ using static DapperEntityGenerator.IO.FileHelper;
 
 namespace DapperEntityGenerator.UI
 {
+    /// <summary>
+    ///     The cache helper
+    /// </summary>
     static class CacheHelper
     {
         #region Properties
+        /// <summary>
+        ///     Gets the configuration file path.
+        /// </summary>
         static string ConfigFilePath => Path.Combine(Path.GetTempPath(), "DapperEntityGenerator.json");
         #endregion
 
         #region Public Methods
+        /// <summary>
+        ///     Gets the main window model from cache.
+        /// </summary>
         public static EntityGeneratorInput GetMainWindowModelFromCache()
         {
             if (!Exists(ConfigFilePath))
@@ -23,6 +32,9 @@ namespace DapperEntityGenerator.UI
             return JsonConvert.DeserializeObject<EntityGeneratorInput>(ReadAllText(ConfigFilePath));
         }
 
+        /// <summary>
+        ///     Saves the main window model to cache.
+        /// </summary>
         public static void SaveMainWindowModelToCache(EntityGeneratorInput model)
         {
             string serializeToJson()

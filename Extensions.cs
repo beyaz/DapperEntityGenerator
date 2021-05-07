@@ -5,14 +5,23 @@ using System.Threading;
 
 namespace DapperEntityGenerator
 {
+    /// <summary>
+    ///     The extensions
+    /// </summary>
     public static class Extensions
     {
         #region Public Methods
+        /// <summary>
+        ///     Loops the specified function.
+        /// </summary>
         public static IReadOnlyList<T> Loop<T>(Func<IReadOnlyList<T>> func, Action<T> process, Action<int> percentOfComplete)
         {
             return Loop(func(), process, percentOfComplete);
         }
 
+        /// <summary>
+        ///     Loops the specified list.
+        /// </summary>
         public static IReadOnlyList<T> Loop<T>(IReadOnlyList<T> list, Action<T> process, Action<int> percentOfComplete)
         {
             int calculatePercent(int i)
@@ -30,6 +39,9 @@ namespace DapperEntityGenerator
             return list;
         }
 
+        /// <summary>
+        ///     Starts the thread.
+        /// </summary>
         public static void StartThread(ThreadStart action)
         {
             new Thread(action).Start();

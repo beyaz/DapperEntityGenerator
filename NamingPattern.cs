@@ -3,8 +3,14 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace DapperEntityGenerator
 {
+    /// <summary>
+    ///     The naming pattern
+    /// </summary>
     static class NamingPattern
     {
+        /// <summary>
+        ///     Gets the name of the variable.
+        /// </summary>
         public static string GetVariableName(string columnName)
         {
             if (columnName == null)
@@ -20,14 +26,20 @@ namespace DapperEntityGenerator
 
             return firstChar + columnName.Substring(1);
         }
-        
-        
 
+
+
+        /// <summary>
+        ///     Resolves the pattern.
+        /// </summary>
         public static string ResolvePattern(Table table,string pattern)
         {
             return pattern.Replace("{SchemaName}", table.Schema).Replace("{TableName}", table.Name);
         }
 
+        /// <summary>
+        ///     Resolves the pattern.
+        /// </summary>
         public static string ResolvePattern(string schemaName,string pattern)
         {
             return pattern.Replace("{SchemaName}", schemaName);
