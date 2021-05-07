@@ -60,11 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="CodeGeneration\ArgumentHelper.cs" />
     <Compile Include="CodeGeneration\EntityGeneratorInput.cs" />
-    <Compile Include="CodeGeneration\ForeignKeyHelper.cs" />
-    <Compile Include="CodeGeneration\ForeignKeyInfo.cs" />
     <Compile Include="CodeGeneration\ProcessInfo.cs" />
-    <Compile Include="CodeGeneration\RelationHelper.cs" />
-    <Compile Include="CodeGeneration\RepositoryGenerator.cs" />
     <Compile Include="CodeGeneration\SqlTypeToDotNetTypeMap.cs" />
     <Compile Include="IO\FileHelper.cs" />
     <Compile Include="Extensions.cs" />
