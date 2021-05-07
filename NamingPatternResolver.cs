@@ -3,10 +3,11 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace DapperEntityGenerator
 {
+
     /// <summary>
-    ///     The naming pattern
+    /// The naming pattern resolver
     /// </summary>
-    static class NamingPattern
+    static class NamingPatternResolver
     {
         /// <summary>
         ///     Gets the name of the variable.

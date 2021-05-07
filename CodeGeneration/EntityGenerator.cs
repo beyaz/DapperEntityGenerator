@@ -5,19 +5,13 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using static System.String;
 using static DapperEntityGenerator.Extensions;
-using static DapperEntityGenerator.NamingPattern;
+using static DapperEntityGenerator.NamingPatternResolver;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
-    /// <summary>
-    ///     The entity generator
-    /// </summary>
     static class EntityGenerator
     {
         #region Public Methods
-        /// <summary>
-        ///     Generates the schema.
-        /// </summary>
         public static void GenerateSchema(EntityGeneratorInput input, ProcessInfo processInfo)
         {
             void trace(string traceMessage)
@@ -115,9 +109,6 @@ namespace DapperEntityGenerator.CodeGeneration
         #endregion
 
         #region Methods
-        /// <summary>
-        ///     Converts to class definition.
-        /// </summary>
         static IReadOnlyList<string> ConvertToClassDefinition(Table table)
         {
             var lines = new List<string>
@@ -139,9 +130,6 @@ namespace DapperEntityGenerator.CodeGeneration
             return lines;
         }
 
-        /// <summary>
-        ///     Converts to property definition.
-        /// </summary>
         static IReadOnlyList<string> ConvertToPropertyDefinition(Column column)
         {
             var propertyType = SqlTypeToDotNetTypeMap.GetDotNetDataType(column.DataType.Name);
