@@ -14,9 +14,6 @@ namespace DapperEntityGenerator.CodeGeneration
         #region Public Methods
         public static void GenerateSchema(EntityGeneratorInput input, ProcessInfo processInfo)
         {
-            var enableRepositoryExport = false;
-            var enableRelatedDataTypes = false;
-
             void trace(string traceMessage)
             {
                 processInfo.Trace = traceMessage;
@@ -81,17 +78,7 @@ namespace DapperEntityGenerator.CodeGeneration
                     "{"
                 };
                 lines.AddRange(ConvertToClassDefinition(table));
-
-                if (enableRelatedDataTypes)
-                {
-                    var relatedDataContract = RelationHelper.GetRelatedDataContract(table, GetTablesInSchema());
-                    if (relatedDataContract.Count > 0)
-                    {
-                        usingLines.Add("using System.Collections.Generic;");
-                        lines.AddRange(relatedDataContract);
-                    }
-                }
-
+                
                 lines.Add("}");
 
                 lines.InsertRange(0, usingLines);
@@ -112,23 +99,10 @@ namespace DapperEntityGenerator.CodeGeneration
             {
                 trace($"Exporting table entity for {table.Name}");
                 ExportEntity(table);
-
-                if (enableRepositoryExport)
-                {
-                    trace($"Exporting table repository for {table.Name}");
-                    RepositoryGenerator.ExportRepository(table, input);
-                }
             }
 
             var processedTables = Loop(GetTablesInSchema, GenerateTable, updatePercent);
-
-            if (enableRepositoryExport)
-            {
-                RepositoryGenerator.ExportRepositoryMainClassDecleration(ResolvePattern(schemaName, input.NamespacePatternForRepository),
-                                                                         ResolvePattern(schemaName, input.ClassNamePatternForRepository),
-                                                                         ResolvePattern(schemaName, input.CSharpOutputFilePathForRepository));
-            }
-
+            
             trace($"{processedTables.Count} table successfully exported.");
             updatePercent(100);
         }
