@@ -69,16 +69,6 @@ namespace DapperEntityGenerator.UI
                                           },
                                           new Card
                                           {
-                                              Header = "Config For Repository",
-                                              Childs = new[]
-                                              {
-                                                  createInput(nameof(EntityGeneratorInput.NamespacePatternForRepository)),
-                                                  createInput(nameof(EntityGeneratorInput.ClassNamePatternForRepository)),
-                                                  createInput(nameof(EntityGeneratorInput.CSharpOutputFilePathForRepository))
-                                              }
-                                          },
-                                          new Card
-                                          {
                                               Header = "Trace",
                                               Childs = new[]
                                               {

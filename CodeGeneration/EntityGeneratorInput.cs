@@ -14,9 +14,7 @@ namespace DapperEntityGenerator.CodeGeneration
         public string NamespacePatternForEntity { get; set; }
         public string CSharpOutputFilePathForEntity { get; set; }
 
-        public string CSharpOutputFilePathForRepository { get; set; }
-        public string NamespacePatternForRepository { get; set; }
-        public string ClassNamePatternForRepository { get; set; }
+      
         #endregion
     }
 }
