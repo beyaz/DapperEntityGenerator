@@ -4,8 +4,11 @@ using System.Windows;
 using System.Windows.Controls;
 using DapperEntityGenerator.CodeGeneration;
 using static DapperEntityGenerator.Extensions;
-using static DapperEntityGenerator.UI.Layout;
-using static DapperEntityGenerator.UI.WpfExtensions;
+using static DapperEntityGenerator.UiHelpers.Layout;
+using static DapperEntityGenerator.UiHelpers.WpfExtensions;
+using  DapperEntityGenerator.UiHelpers;
+
+
 
 namespace DapperEntityGenerator.UI
 {
@@ -18,7 +21,7 @@ namespace DapperEntityGenerator.UI
         /// <summary>
         ///     The progress bar
         /// </summary>
-        ProgressBar progressBar = new ProgressBar
+        readonly ProgressBar progressBar = new ProgressBar
         {
             Value  = 0,
             Height = 10
@@ -27,7 +30,7 @@ namespace DapperEntityGenerator.UI
         /// <summary>
         ///     The trace text
         /// </summary>
-        TextBlock traceText = new TextBlock
+        readonly TextBlock traceText = new TextBlock
         {
             Text = "Ready"
         };
