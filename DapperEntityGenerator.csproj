@@ -59,8 +59,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CodeGeneration\EntityGeneratorInput.cs" />
+    <Compile Include="CodeGeneration\ForeignKeyHelper.cs" />
     <Compile Include="CodeGeneration\ProcessInfo.cs" />
+    <Compile Include="CodeGeneration\RelationHelper.cs" />
     <Compile Include="CodeGeneration\RepositoryGenerator.cs" />
+    <Compile Include="CodeGeneration\SqlTypeToDotNetTypeMap.cs" />
     <Compile Include="IO\FileHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="CodeGeneration\FileContentWriter.cs" />
