@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.Management.Smo;
+﻿sing Microsoft.SqlServer.Management.Smo;
 
 namespace DapperEntityGenerator.CodeGeneration
 {
