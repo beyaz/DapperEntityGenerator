@@ -64,7 +64,7 @@
     <Compile Include="BootstrapperInfrastructure\EmbeddedCompressedAssemblyReferencesResolver.cs" />
     <Compile Include="BootstrapperInfrastructure\ModuleLoader.cs" />
     <Compile Include="BootstrapperInfrastructure\ProcessKiller.cs" />
-    <Compile Include="BootstrapperInfrastructure\Tracer.cs" />
+    <Compile Include="BootstrapperInfrastructure\ZipHelper.cs" />
     <Compile Include="CodeGeneration\ArgumentHelper.cs" />
     <Compile Include="CodeGeneration\EntityGeneratorInput.cs" />
     <Compile Include="CodeGeneration\ProcessInfo.cs" />

@@ -4,8 +4,15 @@ using System.Reflection;
 
 namespace DapperEntityGenerator.BootstrapperInfrastructure
 {
+    /// <summary>
+    ///     The assembly resolver
+    /// </summary>
     static class AssemblyResolver
     {
+        #region Public Methods
+        /// <summary>
+        ///     Resolves the assembly.
+        /// </summary>
         public static Assembly ResolveAssembly(object sender, ResolveEventArgs args, string searchDirectoryPath)
         {
             // Sample:
@@ -24,5 +31,6 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
 
             return Assembly.Load(bytes);
         }
+        #endregion
     }
 }

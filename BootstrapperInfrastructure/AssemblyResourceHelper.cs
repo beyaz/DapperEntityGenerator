@@ -5,12 +5,16 @@ using System.Resources;
 
 namespace DapperEntityGenerator.BootstrapperInfrastructure
 {
+    /// <summary>
+    ///     The assembly resource helper
+    /// </summary>
     static class AssemblyResourceHelper
     {
+        #region Public Methods
         /// <summary>
         ///     Reads the resource.
         /// </summary>
-        public static byte[] ReadResource(Assembly locatedAssembly, Func<string,bool> matchByManifestResourceName)
+        public static byte[] ReadResource(Assembly locatedAssembly, Func<string, bool> matchByManifestResourceName)
         {
             var resourceName = locatedAssembly.GetManifestResourceNames().FirstOrDefault(matchByManifestResourceName);
             if (resourceName == null)
@@ -32,5 +36,6 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
                 return data;
             }
         }
+        #endregion
     }
 }
