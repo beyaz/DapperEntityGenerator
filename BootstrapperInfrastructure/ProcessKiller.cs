@@ -5,7 +5,7 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
     /// <summary>
     ///     The process killer
     /// </summary>
-    class ProcessKiller
+    static class ProcessKiller
     {
         #region Public Methods
         /// <summary>
