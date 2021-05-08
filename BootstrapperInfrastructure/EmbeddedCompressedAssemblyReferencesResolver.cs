@@ -92,43 +92,12 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
         {
             ExtractZipFile();
 
-            appDomain.AssemblyResolve += Resolve;
+            appDomain.AssemblyResolve += (s,e)=>AssemblyResolver.ResolveAssembly(s,e,temporaryDirectory);
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        ///     Reads the resource.
-        /// </summary>
-        static byte[] ReadResource(Assembly locatedAssembly, string resourceSuffix)
-        {
-            var matchedResourceNames = locatedAssembly.GetManifestResourceNames().Where(x => x.EndsWith(resourceSuffix)).ToList();
-
-            if (!matchedResourceNames.Any())
-            {
-                throw new MissingManifestResourceException(resourceSuffix);
-            }
-
-            var resourceName = matchedResourceNames[0];
-            if (resourceName == null)
-            {
-                throw new MissingManifestResourceException(resourceSuffix);
-            }
-
-            using (var manifestResourceStream = locatedAssembly.GetManifestResourceStream(resourceName))
-            {
-                if (manifestResourceStream == null)
-                {
-                    throw new MissingManifestResourceException(resourceName);
-                }
-
-                var data = new byte[manifestResourceStream.Length];
-
-                manifestResourceStream.Read(data, 0, data.Length);
-
-                return data;
-            }
-        }
+        
 
         /// <summary>
         ///     Extracts the zip file.
@@ -162,32 +131,13 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
             Trace($"Creating directory {targetDirectory}");
             Directory.CreateDirectory(targetDirectory);
 
-            File.WriteAllBytes(temporaryZipFilePath, ReadResource(locatedAssembly, "." + embeddedZipFileName));
+            
+            File.WriteAllBytes(temporaryZipFilePath, AssemblyResourceHelper.ReadResource(locatedAssembly,resourceFileName => resourceFileName.EndsWith("." + embeddedZipFileName)));
 
             ZipFile.ExtractToDirectory(temporaryZipFilePath, temporaryDirectory);
         }
 
-        /// <summary>
-        ///     Resolves the specified sender.
-        /// </summary>
-        Assembly Resolve(object sender, ResolveEventArgs args)
-        {
-            // Sample:
-            // args.Name => YamlDotNet, Version=8.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e
-            // new AssemblyName(args.Name).Name => YamlDotNet
-            // searchFileName => YamlDotNet.dll
-
-            var searchFileName = new AssemblyName(args.Name).Name + ".dll";
-
-            if (!File.Exists(temporaryDirectory + searchFileName))
-            {
-                return null;
-            }
-
-            var bytes = File.ReadAllBytes(temporaryDirectory + searchFileName);
-
-            return Assembly.Load(bytes);
-        }
+        
 
         /// <summary>
         ///     Traces the specified message.

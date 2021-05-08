@@ -59,6 +59,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BootstrapperInfrastructure\AssemblyResolver.cs" />
+    <Compile Include="BootstrapperInfrastructure\AssemblyResourceHelper.cs" />
     <Compile Include="BootstrapperInfrastructure\EmbeddedCompressedAssemblyReferencesResolver.cs" />
     <Compile Include="BootstrapperInfrastructure\ModuleLoader.cs" />
     <Compile Include="BootstrapperInfrastructure\ProcessKiller.cs" />
