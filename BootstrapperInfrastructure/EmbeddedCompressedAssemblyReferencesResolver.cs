@@ -7,6 +7,51 @@ using System.Resources;
 
 namespace DapperEntityGenerator.BootstrapperInfrastructure
 {
+
+
+    static class  ZipHelper
+    {
+        public static void ExtractZipFileContentsToDirectory(byte[] zipFileData, string targetDirectoryPath, Action<string> trace)
+        {
+            var temporaryZipFilePath = Path.Combine(targetDirectoryPath, Guid.NewGuid().ToString()+".zip");
+
+            if (File.Exists(temporaryZipFilePath))
+            {
+                trace($"Deleting file {temporaryZipFilePath}");
+                File.Delete(temporaryZipFilePath);
+            }
+
+            var targetDirectory = Path.GetDirectoryName(temporaryZipFilePath);
+            if (targetDirectory == null)
+            {
+                throw new ArgumentNullException(nameof(targetDirectory));
+            }
+
+            if (File.Exists(targetDirectory))
+            {
+                trace($"Deleting file {targetDirectory}");
+                File.Delete(targetDirectory);
+            }
+
+            if (Directory.Exists(targetDirectory))
+            {
+                trace($"Deleting directory {targetDirectory}");
+                Directory.Delete(targetDirectory, true);
+            }
+
+            trace($"Creating directory {targetDirectory}");
+            Directory.CreateDirectory(targetDirectory);
+
+            
+            File.WriteAllBytes(temporaryZipFilePath, zipFileData);
+
+            ZipFile.ExtractToDirectory(temporaryZipFilePath, Path.GetDirectoryName(temporaryZipFilePath));
+            
+            File.Delete(temporaryZipFilePath);
+        }
+    }
+
+
     /// <summary>
     ///     The embedded compressed assembly references resolver
     /// </summary>
@@ -90,7 +135,7 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
         /// </summary>
         public void Resolve()
         {
-            ExtractZipFile();
+            ZipHelper.ExtractZipFileContentsToDirectory(AssemblyResourceHelper.ReadResource(locatedAssembly,resourceFileName => resourceFileName.EndsWith("." + embeddedZipFileName)),temporaryDirectory,Trace);
 
             appDomain.AssemblyResolve += (s,e)=>AssemblyResolver.ResolveAssembly(s,e,temporaryDirectory);
         }
@@ -99,43 +144,9 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
         #region Methods
         
 
-        /// <summary>
-        ///     Extracts the zip file.
-        /// </summary>
-        void ExtractZipFile()
-        {
-            if (File.Exists(temporaryZipFilePath))
-            {
-                Trace($"Deleting file {temporaryZipFilePath}");
-                File.Delete(temporaryZipFilePath);
-            }
+        
 
-            var targetDirectory = Path.GetDirectoryName(temporaryZipFilePath);
-            if (targetDirectory == null)
-            {
-                throw new ArgumentNullException(nameof(targetDirectory));
-            }
-
-            if (File.Exists(targetDirectory))
-            {
-                Trace($"Deleting file {targetDirectory}");
-                File.Delete(targetDirectory);
-            }
-
-            if (Directory.Exists(targetDirectory))
-            {
-                Trace($"Deleting directory {targetDirectory}");
-                Directory.Delete(targetDirectory, true);
-            }
-
-            Trace($"Creating directory {targetDirectory}");
-            Directory.CreateDirectory(targetDirectory);
-
-            
-            File.WriteAllBytes(temporaryZipFilePath, AssemblyResourceHelper.ReadResource(locatedAssembly,resourceFileName => resourceFileName.EndsWith("." + embeddedZipFileName)));
-
-            ZipFile.ExtractToDirectory(temporaryZipFilePath, temporaryDirectory);
-        }
+       
 
         
 

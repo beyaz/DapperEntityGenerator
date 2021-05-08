@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using DapperEntityGenerator.BootstrapperInfrastructure;
 
 namespace DapperEntityGenerator.UI
 {
@@ -12,6 +13,13 @@ namespace DapperEntityGenerator.UI
         ///     Called when [startup].
         /// </summary>
         void OnStartup(object sender, StartupEventArgs e)
+        {
+            ModuleLoader.Load();
+
+            ShowMainWindow();
+        }
+
+        void ShowMainWindow()
         {
             MainWindow = new MainWindow();
 
