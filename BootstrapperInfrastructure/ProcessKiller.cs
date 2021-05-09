@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 
 namespace DapperEntityGenerator.BootstrapperInfrastructure
 {
@@ -8,14 +9,17 @@ namespace DapperEntityGenerator.BootstrapperInfrastructure
     static class ProcessKiller
     {
         #region Public Methods
+
         /// <summary>
-        ///     Kills all.
+        ///     Kills the same proceses except current.
         /// </summary>
-        public static void KillAll(string processName)
+        public static void KillSameProcesesExceptCurrent()
         {
-            foreach (var process in Process.GetProcessesByName(processName))
+            var self = Process.GetCurrentProcess();
+
+            foreach (var p in Process.GetProcessesByName(self.ProcessName).Where(p => p.Id != self.Id))
             {
-                process.Kill();
+                p.Kill();
             }
         }
         #endregion

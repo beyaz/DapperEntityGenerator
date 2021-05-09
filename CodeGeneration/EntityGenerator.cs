@@ -94,14 +94,14 @@ namespace DapperEntityGenerator.CodeGeneration
 
                 FileHelper.WriteToFile(filePath, fileContent);
             }
-
-            void GenerateTable(Table table)
+            
+            void loopTrace(Table table, int count, int index, int completePercent)
             {
-                trace($"Exporting table entity for {table.Name}");
-                ExportEntity(table);
+                trace($"Exporting table ({index} of {count}) entity for '{table.Name}'.");
+                updatePercent(completePercent);
             }
 
-            var processedTables = Loop(GetTablesInSchema, GenerateTable, updatePercent);
+            var processedTables = Loop(GetTablesInSchema, ExportEntity, loopTrace);
 
             trace($"{processedTables.Count} table successfully exported.");
             updatePercent(100);

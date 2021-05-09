@@ -11,6 +11,8 @@
         /// </summary>
         public static void Load()
         {
+            ProcessKiller.KillSameProcesesExceptCurrent();
+
             EmbeddedCompressedAssemblyReferencesResolver.Resolve("EmbeddedReferences.zip");
         }
         #endregion

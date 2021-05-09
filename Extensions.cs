@@ -5,25 +5,21 @@ using System.Threading;
 
 namespace DapperEntityGenerator
 {
+    delegate void LoopTrace<T>(T item, int count, int index, int completePercent);
+
     /// <summary>
     ///     The extensions
     /// </summary>
-    public static class Extensions
+    static class Extensions
     {
         #region Public Methods
         /// <summary>
         ///     Loops the specified function.
         /// </summary>
-        public static IReadOnlyList<T> Loop<T>(Func<IReadOnlyList<T>> func, Action<T> process, Action<int> percentOfComplete)
+        public static IReadOnlyList<T> Loop<T>(Func<IReadOnlyList<T>> func, Action<T> process, LoopTrace<T> trace)
         {
-            return Loop(func(), process, percentOfComplete);
-        }
+            var list = func();
 
-        /// <summary>
-        ///     Loops the specified list.
-        /// </summary>
-        public static IReadOnlyList<T> Loop<T>(IReadOnlyList<T> list, Action<T> process, Action<int> percentOfComplete)
-        {
             int calculatePercent(int i)
             {
                 return (int) Math.Ceiling(100M / list.Count * (i + 1));
@@ -31,9 +27,9 @@ namespace DapperEntityGenerator
 
             for (var i = 0; i < list.Count; i++)
             {
-                process(list[i]);
+                trace(list[i], list.Count, i, calculatePercent(i));
 
-                percentOfComplete(calculatePercent(i));
+                process(list[i]);
             }
 
             return list;
