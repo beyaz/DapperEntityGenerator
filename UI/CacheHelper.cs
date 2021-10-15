@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using DapperEntityGenerator.CodeGeneration;
 using Newtonsoft.Json;
 using static System.IO.File;
@@ -29,7 +30,7 @@ namespace DapperEntityGenerator.UI
                 WriteToFile(ConfigFilePath, ReadAllText(Path.GetFileName(ConfigFilePath)));
             }
 
-            return JsonConvert.DeserializeObject<EntityGeneratorInput>(ReadAllText(ConfigFilePath));
+            return JsonConvert.DeserializeObject<EntityGeneratorInput>(ReadAllText(ConfigFilePath ?? throw new InvalidOperationException()));
         }
 
         /// <summary>
