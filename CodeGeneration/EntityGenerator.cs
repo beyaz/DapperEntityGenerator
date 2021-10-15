@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using DapperEntityGenerator.IO;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -119,9 +121,12 @@ namespace DapperEntityGenerator.CodeGeneration
                 "{"
             };
 
+
+            var hasMultiplePrimaryKey = table.Columns.ToEnumerable().Count(x => x.InPrimaryKey) > 1;
+
             foreach (Column column in table.Columns)
             {
-                lines.AddRange(ConvertToPropertyDefinition(column));
+                lines.AddRange(ConvertToPropertyDefinition(column, hasMultiplePrimaryKey));
                 lines.Add(Empty);
             }
 
@@ -130,7 +135,7 @@ namespace DapperEntityGenerator.CodeGeneration
             return lines;
         }
 
-        static IReadOnlyList<string> ConvertToPropertyDefinition(Column column)
+        static IReadOnlyList<string> ConvertToPropertyDefinition(Column column, bool hasMultiplePrimaryKey)
         {
             var propertyType = SqlTypeToDotNetTypeMap.GetDotNetDataType(column.DataType.Name);
 
@@ -143,7 +148,7 @@ namespace DapperEntityGenerator.CodeGeneration
 
             if (column.InPrimaryKey)
             {
-                lines.Add("[Key]");
+                lines.Add(hasMultiplePrimaryKey ? "[ExplicitKey]" : "[Key]");
             }
 
             lines.Add($"public {propertyType} {column.Name} {{ get; set; }}");

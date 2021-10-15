@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace DapperEntityGenerator
 {
@@ -33,6 +34,14 @@ namespace DapperEntityGenerator
             }
 
             return list;
+        }
+
+        public static IEnumerable<Column> ToEnumerable(this ColumnCollection columnCollection)
+        {
+            foreach (Column column in columnCollection)
+            {
+                yield return column;
+            }
         }
 
         /// <summary>
