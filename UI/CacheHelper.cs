@@ -16,7 +16,7 @@ namespace DapperEntityGenerator.UI
         /// <summary>
         ///     Gets the configuration file path.
         /// </summary>
-        static string ConfigFilePath => Path.Combine(Path.GetTempPath(), "DapperEntityGenerator.json");
+        static string ConfigFilePath => Path.Combine(Path.GetDirectoryName(typeof(CacheHelper).Assembly.Location) ?? throw new InvalidOperationException() , "DapperEntityGenerator.json");
         #endregion
 
         #region Public Methods

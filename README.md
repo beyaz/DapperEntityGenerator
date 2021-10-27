@@ -1,5 +1,6 @@
-# DapperEntityGenerator
-Dapper Entity Generator
+### DapperEntityGenerator
+
+Utility tool for extract Database entity classes to some folder in c# language
 
 Download From here [here](DownloadApplicationFromHere/DapperEntityGenerator.exe?raw=true)
 
